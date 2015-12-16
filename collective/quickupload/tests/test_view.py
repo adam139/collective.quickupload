@@ -11,7 +11,9 @@ from plone.app.testing import TEST_USER_ID
 from StringIO import StringIO
 import json
 import transaction
-
+from zope.component import getUtility
+from plone.registry.interfaces import IRegistry
+from collective.quickupload.browser.quickupload_settings import IQuickUploadControlPanel
 
 class TestCase(unittest.TestCase):
 
@@ -77,9 +79,16 @@ class TestCase(unittest.TestCase):
         filename = 'my-file.jpg'
         portal = self.layer['portal']
         setRoles(portal, TEST_USER_ID, ('Manager',))
-        props = portal.portal_properties.quickupload_properties
-        props._updateProperty('object_unique_id', False)
-        props._updateProperty('object_override', True)
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(IQuickUploadControlPanel)
+#         import pdb
+#         pdb.set_trace()
+        settings.object_unique_id = False
+        settings.object_override = True
+        
+#         props = portal.portal_properties.quickupload_properties
+#         props._updateProperty('object_unique_id', False)
+#         props._updateProperty('object_override', True)
         # We must explicitly commit, otherwise the change somehow gets lost
         # between the two uploads, presumably due to the explicit commit in
         # uploadcapable.py.
@@ -100,9 +109,15 @@ class TestCase(unittest.TestCase):
         filename = 'my-file.jpg'
         portal = self.layer['portal']
         setRoles(portal, TEST_USER_ID, ('Manager',))
-        props = portal.portal_properties.quickupload_properties
-        props._updateProperty('object_unique_id', False)
-        props._updateProperty('object_override', False)
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(IQuickUploadControlPanel)
+#         import pdb
+#         pdb.set_trace()
+        settings.object_unique_id = False
+        settings.object_override = False        
+#         props = portal.portal_properties.quickupload_properties
+#         props._updateProperty('object_unique_id', False)
+#         props._updateProperty('object_override', False)
         # We must explicitly commit.
         transaction.commit()
         # Upload twice.
@@ -120,8 +135,14 @@ class TestCase(unittest.TestCase):
         filename = 'my-file.jpg'
         portal = self.layer['portal']
         setRoles(portal, TEST_USER_ID, ('Manager',))
-        props = portal.portal_properties.quickupload_properties
-        props._updateProperty('id_as_title', True)
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(IQuickUploadControlPanel)
+#         import pdb
+#         pdb.set_trace()
+#         settings.object_unique_id = False
+        settings.id_as_title = True        
+#         props = portal.portal_properties.quickupload_properties
+#         props._updateProperty('id_as_title', True)
         # We must explicitly commit.
         transaction.commit()
         result = self._upload_file(filename)
@@ -137,8 +158,11 @@ class TestCase(unittest.TestCase):
         portal = self.layer['portal']
         setRoles(portal, TEST_USER_ID, ('Manager',))
         # With id_as_title True, an explicit title still wins.
-        props = portal.portal_properties.quickupload_properties
-        props._updateProperty('id_as_title', True)
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(IQuickUploadControlPanel)
+        settings.id_as_title = True       
+#         props = portal.portal_properties.quickupload_properties
+#         props._updateProperty('id_as_title', True)
         # We must explicitly commit.
         transaction.commit()
         title = 'Monty Python'

@@ -60,6 +60,7 @@ setup(name='collective.quickupload',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'plone.app.registry',
           'ua_parser',
       ],
       extras_require={

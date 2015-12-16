@@ -16,8 +16,7 @@ from ZPublisher.HTTPRequest import FileUpload
 from collective.quickupload import HAS_DEXTERITY
 from collective.quickupload import logger
 from collective.quickupload import siteMessageFactory as _
-from collective.quickupload.browser.quickupload_settings import \
-    IQuickUploadControlPanel
+from collective.quickupload.browser.quickupload_settings import IQuickUploadControlPanel
 from collective.quickupload.browser.uploadcapable import MissingExtension
 from collective.quickupload.browser.uploadcapable import get_id_from_filename
 from collective.quickupload.browser.utils import can_dnd
@@ -37,7 +36,13 @@ import os
 import random
 import ticket as ticketmod
 import urllib
+#####
+from zope.component import getUtility
+from plone.registry.interfaces import IRegistry
+# import pdb
+# pdb.set_trace()
 
+#####
 
 import pkg_resources
 try:
@@ -387,7 +392,9 @@ class QuickUploadInit(BrowserView):
         super(QuickUploadInit, self).__init__(context, request)
         self.context = aq_inner(context)
         portal = getUtility(IPloneSiteRoot)
-        self.qup_prefs = IQuickUploadControlPanel(portal)
+        registry = getUtility(IRegistry)
+#         zooSettings = registry.forInterface(IZooSettings)
+        self.qup_prefs = registry.forInterface(IQuickUploadControlPanel)
 
     def ul_content_types_infos(self, mediaupload):
         """
@@ -552,7 +559,10 @@ class QuickUploadAuthenticate(BrowserView):
         self.context = context
         self.request = request
         portal = getUtility(IPloneSiteRoot)
-        self.qup_prefs = IQuickUploadControlPanel(portal)
+        registry = getUtility(IRegistry)
+#         zooSettings = registry.forInterface(IZooSettings)
+        self.qup_prefs = registry.forInterface(IQuickUploadControlPanel)        
+#         self.qup_prefs = IQuickUploadControlPanel(portal)
         self.use_flashupload = self.qup_prefs.use_flashupload
 
     def _auth_with_ticket(self):

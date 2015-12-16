@@ -5,7 +5,8 @@ from Acquisition import aq_inner
 from Acquisition import aq_parent
 from Products.Archetypes.utils import shasattr
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.FactoryTool import TempFolder
+# from Products.CMFPlone.FactoryTool import TempFolder
+from Products.ATContentTypes.tool.factory import TempFolder
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.Sessions.SessionDataManager import SessionDataManagerErr
 from collective.quickupload import logger

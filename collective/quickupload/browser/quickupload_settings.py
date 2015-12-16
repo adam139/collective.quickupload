@@ -1,14 +1,24 @@
-from zope.interface import Interface, implements
-from zope.component import adapts
+# -*- coding: utf-8 -*-
+from datetime import date
+# from zope.interface import Interface, implements
+# from zope.component import adapts
 from zope.schema import Bool, Int
-from Products.CMFDefault.formlib.schema import SchemaAdapterBase
-from Products.CMFPlone.interfaces import IPloneSiteRoot
-from Products.CMFCore.utils import getToolByName
-from zope.formlib.form import FormFields
-from plone.app.controlpanel.form import ControlPanelForm
+# from Products.CMFDefault.formlib.schema import SchemaAdapterBase
+# from Products.CMFPlone.interfaces import IPloneSiteRoot
+# from Products.CMFCore.utils import getToolByName
+# from zope.formlib.form import FormFields
+
 from collective.quickupload import siteMessageFactory as _
 
+from plone.app.registry.browser.controlpanel import ControlPanelFormWrapper
+from plone.app.registry.browser.controlpanel import RegistryEditForm
+from plone.z3cform import layout
+from zope import schema
+from zope.interface import Interface
 
+
+
+        
 class IQuickUploadControlPanel(Interface):
     """
     fields for quick upload control panel
@@ -141,111 +151,120 @@ class IQuickUploadControlPanel(Interface):
         default=False,
         required=False)
 
-
-class QuickUploadControlPanelAdapter(SchemaAdapterBase):
-
-    adapts(IPloneSiteRoot)
-    implements(IQuickUploadControlPanel)
-
-    def __init__(self, context):
-        super(QuickUploadControlPanelAdapter, self).__init__(context)
-        pprop = getToolByName(context, 'portal_properties')
-        self.quProps = pprop.quickupload_properties
-
-    def get_use_flashupload(self):
-        return self.quProps.getProperty('use_flashupload')
-
-    def set_use_flashupload(self, value):
-        self.quProps._updateProperty('use_flashupload', value)
-
-    use_flashupload = property(get_use_flashupload, set_use_flashupload)
-
-    def get_use_flash_as_fallback(self):
-        return self.quProps.getProperty('use_flash_as_fallback')
-
-    def set_use_flash_as_fallback(self, value):
-        self.quProps._updateProperty('use_flash_as_fallback', value)
-
-    use_flash_as_fallback = property(get_use_flash_as_fallback,
-                                     set_use_flash_as_fallback)
-
-    def get_auto_upload(self):
-        return self.quProps.getProperty('auto_upload')
-
-    def set_auto_upload(self, value):
-        self.quProps._updateProperty('auto_upload', value)
-
-    auto_upload = property(get_auto_upload, set_auto_upload)
-
-    def get_show_upload_action(self):
-        return self.quProps.getProperty('show_upload_action')
-
-    def set_show_upload_action(self, value):
-        self.quProps._updateProperty('show_upload_action', value)
-
-    show_upload_action = property(
-        get_show_upload_action, set_show_upload_action)
-
-    def get_fill_titles(self):
-        return self.quProps.getProperty('fill_titles')
-
-    def set_fill_titles(self, value):
-        self.quProps._updateProperty('fill_titles', value)
-
-    fill_titles = property(get_fill_titles, set_fill_titles)
-
-    def get_fill_descriptions(self):
-        return self.quProps.getProperty('fill_descriptions')
-
-    def set_fill_descriptions(self, value):
-        self.quProps._updateProperty('fill_descriptions', value)
-
-    fill_descriptions = property(get_fill_descriptions, set_fill_descriptions)
-
-    def get_size_limit(self):
-        return self.quProps.getProperty('size_limit')
-
-    def set_size_limit(self, value):
-        self.quProps._updateProperty('size_limit', value)
-
-    size_limit = property(get_size_limit, set_size_limit)
-
-    def get_sim_upload_limit(self):
-        return self.quProps.getProperty('sim_upload_limit')
-
-    def set_sim_upload_limit(self, value):
-        self.quProps._updateProperty('sim_upload_limit', value)
-
-    sim_upload_limit = property(get_sim_upload_limit, set_sim_upload_limit)
-
-    def get_object_unique_id(self):
-        return self.quProps.getProperty('object_unique_id')
-
-    def set_object_unique_id(self, value):
-        self.quProps._updateProperty('object_unique_id', value)
-
-    object_unique_id = property(get_object_unique_id, set_object_unique_id)
-
-    def get_object_override(self):
-        return self.quProps.getProperty('object_override')
-
-    def set_object_override(self, value):
-        self.quProps._updateProperty('object_override', value)
-
-    object_override = property(get_object_override, set_object_override)
-
-    def get_id_as_title(self):
-        return self.quProps.getProperty('id_as_title')
-
-    def set_id_as_title(self, value):
-        self.quProps._updateProperty('id_as_title', value)
-
-    id_as_title = property(get_id_as_title, set_id_as_title)
+class QuickUploadControlPanelForm(RegistryEditForm):
+    schema = IQuickUploadControlPanel
+    schema_prefix = "collective.quickupload"
+    label = u'Quick Upload settings'
 
 
-class QuickUploadControlPanel(ControlPanelForm):
+QuickUploadControlPanelView = layout.wrap_form(
+    QuickUploadControlPanelForm, ControlPanelFormWrapper)
 
-    label = _("Quick Upload settings")
-    description = _("""Control how the quick upload tool is used.""")
-    form_name = _("Quick Upload settings")
-    form_fields = FormFields(IQuickUploadControlPanel)
+
+# class QuickUploadControlPanelAdapter(SchemaAdapterBase):
+# 
+#     adapts(IPloneSiteRoot)
+#     implements(IQuickUploadControlPanel)
+# 
+#     def __init__(self, context):
+#         super(QuickUploadControlPanelAdapter, self).__init__(context)
+#         pprop = getToolByName(context, 'portal_properties')
+#         self.quProps = pprop.quickupload_properties
+# 
+#     def get_use_flashupload(self):
+#         return self.quProps.getProperty('use_flashupload')
+# 
+#     def set_use_flashupload(self, value):
+#         self.quProps._updateProperty('use_flashupload', value)
+# 
+#     use_flashupload = property(get_use_flashupload, set_use_flashupload)
+# 
+#     def get_use_flash_as_fallback(self):
+#         return self.quProps.getProperty('use_flash_as_fallback')
+# 
+#     def set_use_flash_as_fallback(self, value):
+#         self.quProps._updateProperty('use_flash_as_fallback', value)
+# 
+#     use_flash_as_fallback = property(get_use_flash_as_fallback,
+#                                      set_use_flash_as_fallback)
+# 
+#     def get_auto_upload(self):
+#         return self.quProps.getProperty('auto_upload')
+# 
+#     def set_auto_upload(self, value):
+#         self.quProps._updateProperty('auto_upload', value)
+# 
+#     auto_upload = property(get_auto_upload, set_auto_upload)
+# 
+#     def get_show_upload_action(self):
+#         return self.quProps.getProperty('show_upload_action')
+# 
+#     def set_show_upload_action(self, value):
+#         self.quProps._updateProperty('show_upload_action', value)
+# 
+#     show_upload_action = property(
+#         get_show_upload_action, set_show_upload_action)
+# 
+#     def get_fill_titles(self):
+#         return self.quProps.getProperty('fill_titles')
+# 
+#     def set_fill_titles(self, value):
+#         self.quProps._updateProperty('fill_titles', value)
+# 
+#     fill_titles = property(get_fill_titles, set_fill_titles)
+# 
+#     def get_fill_descriptions(self):
+#         return self.quProps.getProperty('fill_descriptions')
+# 
+#     def set_fill_descriptions(self, value):
+#         self.quProps._updateProperty('fill_descriptions', value)
+# 
+#     fill_descriptions = property(get_fill_descriptions, set_fill_descriptions)
+# 
+#     def get_size_limit(self):
+#         return self.quProps.getProperty('size_limit')
+# 
+#     def set_size_limit(self, value):
+#         self.quProps._updateProperty('size_limit', value)
+# 
+#     size_limit = property(get_size_limit, set_size_limit)
+# 
+#     def get_sim_upload_limit(self):
+#         return self.quProps.getProperty('sim_upload_limit')
+# 
+#     def set_sim_upload_limit(self, value):
+#         self.quProps._updateProperty('sim_upload_limit', value)
+# 
+#     sim_upload_limit = property(get_sim_upload_limit, set_sim_upload_limit)
+# 
+#     def get_object_unique_id(self):
+#         return self.quProps.getProperty('object_unique_id')
+# 
+#     def set_object_unique_id(self, value):
+#         self.quProps._updateProperty('object_unique_id', value)
+# 
+#     object_unique_id = property(get_object_unique_id, set_object_unique_id)
+# 
+#     def get_object_override(self):
+#         return self.quProps.getProperty('object_override')
+# 
+#     def set_object_override(self, value):
+#         self.quProps._updateProperty('object_override', value)
+# 
+#     object_override = property(get_object_override, set_object_override)
+# 
+#     def get_id_as_title(self):
+#         return self.quProps.getProperty('id_as_title')
+# 
+#     def set_id_as_title(self, value):
+#         self.quProps._updateProperty('id_as_title', value)
+# 
+#     id_as_title = property(get_id_as_title, set_id_as_title)
+# 
+# 
+# class QuickUploadControlPanel(ControlPanelForm):
+# 
+#     label = _("Quick Upload settings")
+#     description = _("""Control how the quick upload tool is used.""")
+#     form_name = _("Quick Upload settings")
+#     form_fields = FormFields(IQuickUploadControlPanel)
