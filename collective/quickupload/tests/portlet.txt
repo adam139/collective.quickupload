@@ -65,8 +65,9 @@ Test portlet Edit View
 Test portlet Rendering
 ----------------------
 
-    >>> request = doc.REQUEST
-    >>> view = doc.restrictedTraverse('@@folder_contents')
+    >>> request = folder.REQUEST
+
+    >>> view = folder.restrictedTraverse('@@folder_contents')
     >>> manager = getUtility(IPortletManager, name='plone.rightcolumn', context=portal)
     >>> assignment = quickuploadportlet.Assignment(header=u"", upload_portal_type=u"Image", upload_media_type=u"image")
     >>> renderer = getMultiAdapter((doc, request, view, manager, assignment), IPortletRenderer)

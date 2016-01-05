@@ -31,8 +31,8 @@
       description="Removes quick upload form from Plone"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
-
-  <adapter factory=".archetypes.ArchetypesFileSetter" />
+<!--
+  <adapter factory=".archetypes.ArchetypesFileSetter" /> -->
 
   <configure zcml:condition="installed plone.app.dexterity">
 

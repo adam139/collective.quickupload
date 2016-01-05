@@ -30,9 +30,10 @@ Try to get the view as contributor:
     >>> browser.open(portal.absolute_url() + '/login_form')
     >>> browser.getControl(name='__ac_name').value = TEST_USER_NAME
     >>> browser.getControl(name='__ac_password').value = TEST_USER_PASSWORD
-    >>> browser.getControl(name='submit').click()
+    >>> browser.getControl(name='submit').click()    
     >>> 'You are now logged in' in browser.contents
     True
+
     >>> browser.open(folder_url + '/@@quick_upload')
     >>> browser.url
     'http://nohost/plone/test-folder/@@quick_upload'
@@ -40,8 +41,11 @@ Try to get the view as contributor:
 Test template depending on configuration
 ----------------------------------------
 
-    >>> from collective.quickupload.browser.quickupload_settings import IQuickUploadControlPanel
-    >>> qup_prefs = IQuickUploadControlPanel(portal)
+    >>> from collective.quickupload.browser.quickupload_settings import IQuickUploadControlPanel    
+    >>> from zope.component import getUtility
+    >>> from plone.registry.interfaces import IRegistry
+    >>> registry = getUtility(IRegistry)
+    >>> qup_prefs = registry.forInterface(IQuickUploadControlPanel)
 
 .. XXX: Are this tests really valid???
 .. Change the property use_flash_upload

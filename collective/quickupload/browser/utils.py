@@ -12,13 +12,14 @@ from ua_parser import user_agent_parser
 from zope.component import getMultiAdapter
 from zope.component import getUtilitiesFor
 from zope.component import getUtility
-
+from plone.registry.interfaces import IRegistry
 
 class QuickuploadHelper(BrowserView):
 
     def show_quickupload_action(self):
         portal = getUtility(IPloneSiteRoot)
-        qup_prefs = IQuickUploadControlPanel(portal)
+        registry = getUtility(IRegistry)
+        qup_prefs = registry.forInterface(IQuickUploadControlPanel)
         if not qup_prefs.show_upload_action:
             return False
         context_state = getMultiAdapter(

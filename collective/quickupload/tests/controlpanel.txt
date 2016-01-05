@@ -18,13 +18,20 @@ First, login:
     >>> 'You are now logged in' in browser.contents
     True
 
-Get the quick upload property sheet which stores configuration data :
-
-    >>> quickupload_properties = portal.portal_properties.quickupload_properties
+ 
 
 Viewing the Quick Upload control panel
 --------------------------------------
 
+    >>> from plone.app.testing import setRoles
+    >>> from plone.app.testing import TEST_USER_ID
+    >>> setRoles(portal, TEST_USER_ID, ['Member', 'Manager'])
+    >>> from plone.app.testing import TEST_USER_NAME, TEST_USER_PASSWORD
+    
+    >>> browser.addHeader('Authorization', 'Basic %s:%s' % (TEST_USER_NAME, TEST_USER_PASSWORD,))    
+    >>> import transaction
+    >>> transaction.commit()
+    
     >>> browser.open(portal_url + '/@@quickupload-controlpanel')
     >>> browser.url
     'http://nohost/plone/@@quickupload-controlpanel'
@@ -59,6 +66,15 @@ We should be informed that something has changed:
 
     >>> 'Changes saved.' in browser.contents
     True
+
+Get the quick upload property sheet which stores configuration data :
+
+
+    >>> from collective.quickupload.browser.quickupload_settings import IQuickUploadControlPanel
+    >>> from zope.component import getUtility
+    >>> from plone.registry.interfaces import IRegistry
+    >>> registry = getUtility(IRegistry)
+    >>> quickupload_properties = registry.forInterface(IQuickUploadControlPanel)   
 
 Make sure the changes have been applied correctly to the quick upload properties sheet:
 
